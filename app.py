@@ -73,8 +73,8 @@ def notes():
             note = request.form['noteinput']
             db = connect_db()
             c = db.cursor()
-            statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,%s,'%s','%s',%s);""" %(session['userid'],time.strftime('%Y-%m-%d %H:%M:%S'),note,random.randrange(1000000000, 9999999999))
-            print(statement)
+            statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,%s,'%s','%s',%s);"""
+            print(statement, (session['userid']), (time.strftime('%Y-%m-%d %H:%M:%S')), (note), (random.randrange(1000000000, 9999999999)),)
             c.execute(statement)
             db.commit()
             db.close()
