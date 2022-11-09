@@ -96,7 +96,7 @@ def notes():
     db = connect_db()
     c = db.cursor()
     statement = "SELECT * FROM notes WHERE assocUser = ?;"
-    c.execute(statement, (session['userid']))
+    c.execute(statement, [session['userid']])
     notes = c.fetchall()
     print(notes)
     
@@ -140,12 +140,12 @@ def register():
         c = db.cursor()
         pass_statement = """SELECT * FROM users WHERE password = ?;"""
         user_statement = """SELECT * FROM users WHERE username = ?;"""
-        c.execute(pass_statement, (password))
+        c.execute(pass_statement, [password])
         if(len(c.fetchall())>0):
             errored = True
             passworderror = "That password is already in use by someone else!"
 
-        c.execute(user_statement, (username))
+        c.execute(user_statement, [username])
         if(len(c.fetchall())>0):
             errored = True
             usererror = "That username is already in use by someone else!"
