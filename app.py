@@ -73,10 +73,9 @@ def notes():
             note = request.form['noteinput']
             db = connect_db()
             c = db.cursor()
-            statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,%s,'%s','%s',%s);"""
-            print(statement, (session['userid']), (time.strftime('%Y-%m-%d %H:%M:%S')), (note), (random.randrange(1000000000, 9999999999)),)
-            c.execute(statement, (session['userid']), (time.strftime('%Y-%m-%d %H:%M:%S')), (note), (random.randrange(1000000000, 9999999999)),)
-            db.commit()
+            statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,?,?,?,?);"""
+            c.execute(statement, (session['userid'], time.strftime('%Y-%m-%d %H:%M:%S'), note, random.randrange(1000000000, 9999999999)))
+            db.commit();
             db.close()
         elif request.form['submit_button'] == 'import note':
             noteid = request.form['noteid']
@@ -87,8 +86,8 @@ def notes():
             result = c.fetchall()
             if(len(result)>0):
                 row = result[0]
-                statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,%s,'%s','%s',%s);"""
-                c.execute(statement, (session['userid']), (row[2]), (row[3]), (row[4]),)
+                statement = """INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,?,?,?,?);"""
+                c.execute(statement, (session['userid'], row[2], row[3], row[4]))
             else:
                 importerror="No such note with that ID!"
             db.commit()
@@ -96,9 +95,8 @@ def notes():
     
     db = connect_db()
     c = db.cursor()
-    statement = "SELECT * FROM notes WHERE assocUser = %s;"
-    print(statement, (session['userid']),)
-    c.execute(statement, (session['userid']),)
+    statement = "SELECT * FROM notes WHERE assocUser = ?;"
+    c.execute(statement, (session['userid']))
     notes = c.fetchall()
     print(notes)
     
@@ -113,8 +111,8 @@ def login():
         password = request.form['password']
         db = connect_db()
         c = db.cursor()
-        statement = "SELECT * FROM users WHERE username = '%s' AND password = '%s';"
-        c.execute(statement, (username), (password),)
+        statement = "SELECT * FROM users WHERE username = ? AND password = ?;"
+        c.execute(statement, (username, password))
         result = c.fetchall()
 
         if len(result) > 0:
@@ -140,22 +138,22 @@ def register():
         password = request.form['password']
         db = connect_db()
         c = db.cursor()
-        pass_statement = """SELECT * FROM users WHERE password = '%s';"""
-        user_statement = """SELECT * FROM users WHERE username = '%s';"""
-        c.execute(pass_statement, (password),)
+        pass_statement = """SELECT * FROM users WHERE password = ?;"""
+        user_statement = """SELECT * FROM users WHERE username = ?;"""
+        c.execute(pass_statement, (password))
         if(len(c.fetchall())>0):
             errored = True
             passworderror = "That password is already in use by someone else!"
 
-        c.execute(user_statement, (username),)
+        c.execute(user_statement, (username))
         if(len(c.fetchall())>0):
             errored = True
             usererror = "That username is already in use by someone else!"
 
         if(not errored):
-            statement = """INSERT INTO users(id,username,password) VALUES(null,'%s','%s');"""
-            print(statement, (username), (password),)
-            c.execute(statement, (username), (password),)
+            statement = """INSERT INTO users(id,username,password) VALUES(null,?,?);"""
+            print(statement, (username, password))
+            c.execute(statement, (username, password))
             db.commit()
             db.close()
             return f"""<html>
