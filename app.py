@@ -180,7 +180,6 @@ def register():
         db.close()
     return render_template('register.html',usererror=usererror,passworderror=passworderror)
 
-
 @app.route("/logout/")
 @login_required
 def logout():
